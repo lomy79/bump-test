@@ -21,13 +21,17 @@ jobs:
         distribution: 'corretto'
         cache: 'maven'        
     - name: Bump version
-      # id: bump
-      # uses: ./.github/actions/maven-version-bump-action
-      # with:
-      #   github-token: ${{ secrets.github_token }}
-      #   pom-path:  'myguestcare-commons'
-      id: bump
-      run: mvn
+      run: |
+        POMPATH=myguestcare-commons
+        OLD_VERSION=$(cd $POMPATH && mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        BUMP_MODE="none"
+        old="$OLD_VERSION"
+        parts=( ${old//./ } )
+        bv=$((parts[2] + 1))
+        NEW_VERSION="${parts[0]}.${parts[1]}.${bv}"
+        echo "pom.xml at" $POMPATH "will be bumped from" $OLD_VERSION "to" $NEW_VERSION
+        mvn -q versions:set -DnewVersion="${NEW_VERSION}" --file $POMPATH/pom.xml
+        echo ::set-output name=jar_version::${NEW_VERSION}
       
     - name: Commit & Push changes
       uses: actions-js/push@master
