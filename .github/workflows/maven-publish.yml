@@ -32,11 +32,19 @@ jobs:
         echo "pom.xml at" $POMPATH "will be bumped from" $OLD_VERSION "to" $NEW_VERSION
         mvn -q versions:set -DnewVersion="${NEW_VERSION}" --file $POMPATH/pom.xml
         echo ::set-output name=jar_version::${NEW_VERSION}
-      
+     
+    - name: Generate Githup App Token
+      id: generate_token
+      uses: tibdex/github-app-token@v1
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        installation_id: ${{ secrets.INSTALLATION_ID }}
+        private_key:  ${{ secrets.APP_PRIVATE_KEY }}    
+    
     - name: Commit & Push changes
       uses: actions-js/push@master
       with:
-       github_token: ${{ github.token }}
+       github_token: ${{ env.TOKEN }}
 
     # - name: Build with Maven
     #   working-directory: ./myguestcare-commons
