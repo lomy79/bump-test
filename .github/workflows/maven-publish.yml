@@ -43,7 +43,7 @@ jobs:
     - name: Commit & Push changes
       uses: actions-js/push@master
       with:
-       github_token: ${{ env.TOKEN }}
+       github_token: ${{ steps.generate_token.outputs.token }}
 
     # - name: Build with Maven
     #   working-directory: ./myguestcare-commons
