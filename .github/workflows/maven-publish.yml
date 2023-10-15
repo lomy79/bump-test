@@ -40,10 +40,19 @@ jobs:
     #     app-id: ${{ secrets.APP_ID }}
     #     private-key:  ${{ secrets.APP_PRIVATE_KEY }}    
     
-    - name: Commit & Push changes
-      uses: actions-js/push@master
-      with:
-       github_token: ${{ secrets.GH_PAT }}
+    # - name: Commit & Push changes
+    #   uses: actions-js/push@master
+    #   with:
+    #    github_token: ${{ secrets.GH_PAT }}
+
+    - name: Aggiorna file
+      run: |
+        touch file.txt
+        git add file.txt
+        git commit -m "Aggiorna file.txt"
+        git push origin master --token $TOKEN
+      env:
+        TOKEN: ${{ secrets.GH_PAT }}
 
     # - name: Build with Maven
     #   working-directory: ./myguestcare-commons
