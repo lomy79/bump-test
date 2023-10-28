@@ -51,8 +51,7 @@ jobs:
         git add file.txt
         git commit -m "Aggiorna file.txt"
         git push origin main --token $TOKEN
-      env:
-        TOKEN: ${{ secrets.GH_PAT }}
+     
 
     # - name: Build with Maven
     #   working-directory: ./myguestcare-commons
