@@ -50,7 +50,7 @@ jobs:
         touch file.txt
         git add file.txt
         git commit -m "Aggiorna file.txt"
-        git push origin main --token $TOKEN
+        git push origin main
      
 
     # - name: Build with Maven
