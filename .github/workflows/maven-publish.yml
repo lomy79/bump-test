@@ -3,7 +3,10 @@
 
 name: Publish
 
-on: push
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
 
 jobs:
   publish:
@@ -36,17 +39,17 @@ jobs:
         mvn -q versions:set -DnewVersion="${NEW_VERSION}" --file $POMPATH/pom.xml
         echo ::set-output name=jar_version::${NEW_VERSION}
      
-    # - name: Generate Githup App Token
-    #   id: generate_token
-    #   uses: actions/create-github-app-token@v1
-    #   with:
-    #     app-id: ${{ secrets.APP_ID }}
-    #     private-key:  ${{ secrets.APP_PRIVATE_KEY }}    
+    - name: Generate Githup App Token
+      id: generate_token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ secrets.APP_ID }}
+        private-key:  ${{ secrets.APP_PRIVATE_KEY }}    
     
     - name: Commit & Push changes
       uses: actions-js/push@master
       with:
-       github_token: ${{ secrets.GH_PAT }}
+       github_token: ${{ steps.generate_token.outputs.token }}
 
     # - name: Aggiorna file
     #   run: |
