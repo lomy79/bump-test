@@ -26,19 +26,29 @@ jobs:
         java-version: '8'
         distribution: 'corretto'
         cache: 'maven'        
+    - name: Remove snapshot
+      run: |
+        POMPATH=myguestcare-commons
+        OLD_VERSION=$(cd $POMPATH && mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+        BUMP_MODE="none"
+        VERSION="${OLD_VERSION%-SNAPSHOT}"
+        mvn -q versions:set -DnewVersion="${VERSION}" --file $POMPATH/pom.xml
+        echo ::set-output name=jar_version::${VERSION}
+        echo 'you can now generate package and deploy it'
+    
     - name: Bump version
       run: |
         POMPATH=myguestcare-commons
         OLD_VERSION=$(cd $POMPATH && mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         BUMP_MODE="none"
-        old="$OLD_VERSION"
+        version="$OLD_VERSION"
         parts=( ${old//./ } )
         bv=$((parts[2] + 1))
-        NEW_VERSION="${parts[0]}.${parts[1]}.${bv}"
+        NEW_VERSION="${parts[0]}.${parts[1]}.${bv}-SNAPSHOT"
         echo "pom.xml at" $POMPATH "will be bumped from" $OLD_VERSION "to" $NEW_VERSION
         mvn -q versions:set -DnewVersion="${NEW_VERSION}" --file $POMPATH/pom.xml
         echo ::set-output name=jar_version::${NEW_VERSION}
-     
+
     - name: Generate Githup App Token
       id: generate_token
       uses: actions/create-github-app-token@v1
