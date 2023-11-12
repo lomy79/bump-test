@@ -26,7 +26,7 @@ jobs:
         java-version: '8'
         distribution: 'corretto'
         cache: 'maven'        
-    - name: Remove snapshot
+    - name: Remove snapshot suffix to version
       run: |
         POMPATH=myguestcare-commons
         OLD_VERSION=$(cd $POMPATH && mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
@@ -41,7 +41,7 @@ jobs:
         POMPATH=myguestcare-commons
         OLD_VERSION=$(cd $POMPATH && mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         BUMP_MODE="none"
-        version="$OLD_VERSION"
+        old="$OLD_VERSION"
         parts=( ${old//./ } )
         bv=$((parts[2] + 1))
         NEW_VERSION="${parts[0]}.${parts[1]}.${bv}-SNAPSHOT"
